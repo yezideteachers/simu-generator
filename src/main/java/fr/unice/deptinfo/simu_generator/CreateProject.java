@@ -26,11 +26,17 @@ public class CreateProject {
 	public static boolean visu= false;
 	public static int vitesseSimu = 10 ;
 	public static Map<String,Method> map = new HashMap<String, Method>(); 
-	
+	public static Map mapNbCreat = new  HashMap<String, Integer>();
+	public static Map mapVitSimul = new  HashMap<String, Integer>();
 	
 	/*create folder src , bin*/
 	public void createProject(String folder){
 		new File(folder).mkdir();
+		mapNbCreat.put("Dizaine", randomNb(10, 99));
+		mapNbCreat.put("Centaine", randomNb(100, 999));
+		mapNbCreat.put("Milliers", randomNb(1000, 9999));
+		mapVitSimul.put("VLent", 30);
+		mapVitSimul.put("VRapide", 5);
 		
 	}
 	
@@ -133,34 +139,15 @@ public class CreateProject {
 		cr.createProject("generated/src");
 		cr.createProject("generated/src/simulator");
 		cr.createProject("generated/src/main");
-		Map map = new  HashMap<String, String>();
+		
 		for (String c : selected)
 		{
-			
-			if (c.equals("Dizaine"))
-			{
-				nbrCreature=randomNb(10 , 99);	
+			if(!c.equals("finish")){
+				if(mapNbCreat.get(c) != null){
+				nbrCreature = (Integer) mapNbCreat.get(c);}
+				if(mapVitSimul.get(c) != null){vitesseSimu = (Integer) mapVitSimul.get(c);}
 			}
-			if (c.equals("Centaine"))
-			{
-				nbrCreature=randomNb(100 , 999);		
-			}
-			if (c.equals("Milliers"))
-			{
-				nbrCreature=randomNb(1000 , 9999);	
-			}
-			if (c.equals("Visu"))
-			{
-				visu=true;	
-			}
-			if (c.equals("VLent"))
-			{
-				vitesseSimu=30;	
-			}
-			if (c.equals("VRapide"))
-			{
-				vitesseSimu=3;	
-			}
+			if (c.equals("Visu")){visu=true;}
 			
 		}
 	
