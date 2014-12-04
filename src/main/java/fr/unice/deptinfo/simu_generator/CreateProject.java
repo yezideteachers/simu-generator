@@ -110,9 +110,9 @@ public class CreateProject {
 		cr.createProject("generated/src/simulator");
 		cr.createProject("generated/src/main");
 	
-		cr.generateFile("Ressources/src/simulator/Simulator.java", "generated/src/simulator/Simulator.java");
+		/*cr.generateFile("Ressources/src/simulator/Simulator.java", "generated/src/simulator/Simulator.java");
 		cr.generateFile("Ressources/src/simulator/ISimulationListener.java", "generated/src/simulator/ISimulationListener.java");
-		cr.generateFile("Ressources/src/simulator/IActionable.java", "generated/src/simulator/IActionable.java");
+		cr.generateFile("Ressources/src/simulator/IActionable.java", "generated/src/simulator/IActionable.java");*/
 		cr.editConst("Ressources/src/main/Constante.java","50" , "false", "60");
 		cr.generateFile("Ressources/src/main/Constante.java", "generated/src/main/Constante.java");
 		
