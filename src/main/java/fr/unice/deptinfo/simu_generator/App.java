@@ -45,8 +45,20 @@ public class App
 	        String selectCmd = "select ";
 	        
 	        do {
-	        	System.out.println("Enter the name of features you wish to select, or type exit to exit.");
+	        	System.out.println("Enter the name of features you wish to select, or type exit to exit , or type finish when you want the project to be generated");
 	        	s = scan.nextLine();
+	        	if (s.equals("finish"))
+	        	{
+	        		CreateProject.generate(fi.getSelectedFeature(configName));
+	        		break;
+	        	}
+	        	if (s.equals("Fixe"))
+	        	{	String temp = s;
+	        		System.out.println("Enter the number of creature : ");
+	        		s = scan.nextLine();
+	        		CreateProject.nbrCreature=Integer.valueOf(s);
+	        		s=temp;
+	        	}
 	        	if (!s.equals("exit")) {
 		        	fi.eval(selectCmd+s+" in "+configName);
 		        	System.out.println("Selected features :"+fi.getSelectedFeature(configName));
@@ -54,6 +66,7 @@ public class App
 		        	System.out.println("Unselected features :"+fi.getUnselectedFeature(configName));
 		        	System.out.println("The configuration is complete : "+fi.getConfigurationVariable(configName).isComplete());
 	        	}
+	        	
 	        } while (!s.equals("exit"));
 		} catch (FMEngineException e) {
 			// TODO Auto-generated catch block
