@@ -1,5 +1,6 @@
 package fr.unice.deptinfo.simu_generator;
 
+import java.io.FileFilter ;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,8 +18,17 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+
+
+
+
+
+
+
+import fr.unice.deptinfo.maven_compiler.FileTool;
 
 public class CreateProject {
 	
@@ -28,16 +38,23 @@ public class CreateProject {
 	public static Map<String,Method> map = new HashMap<String, Method>(); 
 	public static Map mapNbCreat = new  HashMap<String, Integer>();
 	public static Map mapVitSimul = new  HashMap<String, Integer>();
-	
+	public static Map mapStrategy = new  HashMap<String, String>();
 	/*create folder src , bin*/
 	public void createProject(String folder){
 		new File(folder).mkdir();
+		
 		mapNbCreat.put("Dizaine", randomNb(10, 99));
 		mapNbCreat.put("Centaine", randomNb(100, 999));
 		mapNbCreat.put("Milliers", randomNb(1000, 9999));
+		
 		mapVitSimul.put("VLent", 30);
 		mapVitSimul.put("VRapide", 5);
 		
+		mapStrategy.put("Torique", "StrategyTorique.class");
+		mapStrategy.put("Hasard", "StrategyHasard.class");
+		mapStrategy.put("Circulaire", "StrategyCirculaire.class");
+		mapStrategy.put("Troupeau", "StrategyTroupeau.class");
+		mapStrategy.put("Ferme", "StrategyFerme.class");
 	}
 	
 	public void generateMethode(){
@@ -136,87 +153,92 @@ public class CreateProject {
 	{
 		CreateProject cr= new CreateProject();
 		cr.createProject("generated");
-		cr.createProject("generated/src");
-		cr.createProject("generated/src/simulator");
-		cr.createProject("generated/src/main");
+	
+		System.out.println("selected generer :  " + selected);
 		
 		for (String c : selected)
 		{
-			if(!c.equals("finish")){
-				if(mapNbCreat.get(c) != null){
-				nbrCreature = (Integer) mapNbCreat.get(c);}
-				if(mapVitSimul.get(c) != null){vitesseSimu = (Integer) mapVitSimul.get(c);}
+			
+			if(mapNbCreat.get(c) != null)
+			{
+				nbrCreature = (Integer) mapNbCreat.get(c);
 			}
-			if (c.equals("Visu")){visu=true;}
+			if(mapVitSimul.get(c) != null)
+			{
+				vitesseSimu = (Integer) mapVitSimul.get(c);
+			}
+			
+			if (c.equals("Visu"))
+			{
+				visu=true;
+			}
+			
 			
 		}
-	
-		cr.generateFile("Ressources/src/simulator/Simulator.java", "generated/src/simulator/Simulator.java");
-		cr.generateFile("Ressources/src/simulator/ISimulationListener.java", "generated/src/simulator/ISimulationListener.java");
-		cr.generateFile("Ressources/src/simulator/IActionable.java", "generated/src/simulator/IActionable.java");
+		FileFilter fileFilter=MyFilterMyplugins(selected);
+		
 		cr.editConst("Ressources/src/main/Constante.java");
-		cr.generateFile("Ressources/src/main/Constante.java", "generated/src/main/Constante.java");
-	}
-	
-	
-	/*
-	public static void RandNbD()
-	{
-		nbrCreature=randomNb(10 , 99);	 
-	}
-	
-	public static void RandNbC()
-	{
-		nbrCreature=randomNb(100 , 999);		 
-	}
-	
-	public static void RandNbM()
-	{
-		nbrCreature=randomNb(1000 , 9999);	
-	}
-	
-	
-		public static void generate(Collection<String> selected)
-	{
-		CreateProject cr= new CreateProject();
-		cr.createProject("generated");
-		cr.createProject("generated/src");
-		cr.createProject("generated/src/simulator");
-		cr.createProject("generated/src/main");
-		map.put("Dizaine", RandNbD());
-		map.put("Centaine",RandNbC());
-		map.put("Milliers", RandNbM());
-		for (String c : selected)
-		{
+		
+		
+		try {
+			FileTool.copyFilesRecursively(new File("Ressources"), new File("Ressources/"), new File("generated"),fileFilter);
+			fileFilter=MyFilterCreatures(selected);
+			new File("generated/myplugins/repository/").mkdir();
+			FileTool.copyFilesRecursively(new File("Ressources/myplugins/repository/creatures"), new File("Ressources/myplugins/repository/creatures/"),
+					new File("generated/myplugins/repository/creatures"),fileFilter);
 			
-			if (c.equals("Dizaine"))
-			{
-				nbrCreature=randomNb(10 , 99);	
-			}
-			if (c.equals("Centaine"))
-			{
-				nbrCreature=randomNb(100 , 999);		
-			}
-			if (c.equals("Milliers"))
-			{
-				nbrCreature=randomNb(1000 , 9999);	
-			}
-			Method method = map.get(c);
-			method.;
-			//if (c.equals(""))
-			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		cr.generateFile("Ressources/src/simulator/Simulator.java", "generated/src/simulator/Simulator.java");
-		cr.generateFile("Ressources/src/simulator/ISimulationListener.java", "generated/src/simulator/ISimulationListener.java");
-		cr.generateFile("Ressources/src/simulator/IActionable.java", "generated/src/simulator/IActionable.java");
-		cr.editConst("Ressources/src/main/Constante.java", "false", "60");
-		cr.generateFile("Ressources/src/main/Constante.java", "generated/src/main/Constante.java");
 	}
-	*/
-	void generateSimulator(){
-		
+	
+	public static FileFilter MyFilterMyplugins(final Collection<String> selected){
+		FileFilter fileFilter=new FileFilter(){
+			public boolean accept(File file)
+			{
+				for (String c : selected) {
+			
+				if (file.getName().equals("repository"))
+				{
+					return false;
+				}}
+				return true;
+			}
+			
+			public String getDescription() {
+				// TODO Auto-generated method stub
+				return "File les fichier de strategy non voulu dans la configuration";
+			}
+			
+		};
+		return fileFilter;
 	}
+	
+	public static FileFilter MyFilterCreatures(final Collection<String> selected){
+		FileFilter fileFilter=new FileFilter(){
+			public boolean accept(File file)
+			{
+				for (String c : selected) {
+				
+				if ((mapStrategy.get(c) != null)&&(file.getName().equals(mapStrategy.get(c))||
+						file.getName().equals((((String)mapStrategy.get(c)).split(".class"))[0]+"Test.class")))
+				{
+					return true;
+				}}
+				return false;
+			}
+			
+			public String getDescription() {
+				// TODO Auto-generated method stub
+				return "File les fichier de strategy non voulu dans la configuration";
+			}
+			
+		};
+		return fileFilter;
+	}
+	
+	
 
 
 }

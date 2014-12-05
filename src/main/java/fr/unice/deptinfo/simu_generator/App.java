@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import fr.unice.deptinfo.familiar_interpreter.FMEngineException;
 import fr.unice.deptinfo.familiar_interpreter.impl.FamiliarInterpreter;
+import fr.unice.deptinfo.maven_compiler.FileTool;
 import fr.unice.polytech.modalis.familiar.interpreter.VariableNotExistingException;
 import fr.unice.polytech.modalis.familiar.parser.VariableAmbigousConflictException;
 import fr.unice.polytech.modalis.familiar.variable.FeatureModelVariable;
@@ -16,6 +17,7 @@ public class App
 {
     public static void main( String[] args )
     {
+    	
     	String fmName = "simul";
     	String FM = fmName+" = FM(SimuTechno: [ICreature] [Visu] Moteur;"+
 			  "ICreature: Deplacement ComportementAuBord Couleur Nombre;"+
