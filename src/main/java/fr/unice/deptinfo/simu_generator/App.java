@@ -20,15 +20,18 @@ public class App
     	
     	String fmName = "simul";
     	String FM = fmName+" = FM(SimuTechno: [ICreature] [Visu] Moteur;"+
-			  "ICreature: Deplacement ComportementAuBord Couleur Nombre;"+
-			  "Deplacement: (Hasard|Troupeau);"+
-			  "Couleur: (Cube|Groupe|Unique);"+
-			  "ComportementAuBord: (Torique|Circulaire|Ferme);"+
-			  "Nombre: (NAleatoire|Fixe);"+
-			  "NAleatoire: (Dizaine|Centaine|Milliers);"+
-			  "Moteur: VitesseSimu Action;"+
-			  "Action: Sequentiel;"+
-			 "VitesseSimu: (VLent|VRapide|VNormal);)";
+    			"ICreature: Deplacement ComportementAuBord Couleur Nombre Direction;"+
+    			"Deplacement: (Hasard|Troupeau)+;"+
+    			"Couleur: (Cube|Groupe|Unique);"+
+    			"ComportementAuBord: (Torique|Circulaire|Ferme)+;"+
+    			"Nombre: (NAleatoire|Fixe);"+
+    			"NAleatoire: (Dizaine|Centaine|Milliers);"+
+    			"Moteur: VitesseSimu Action;"+
+    			"Action: Sequentiel;"+
+    			"VitesseSimu: (VLent|VRapide|VNormal);"+
+    			"Direction: (DAleatoire|DFixe);"+
+    			"DAleatoire -> Hasard;"+
+    			"DFixe -> Troupeau;)";
     	String configName = "SimuTechno";
     	
     	FamiliarInterpreter fi = FamiliarInterpreter.getInstance();
@@ -49,11 +52,7 @@ public class App
 	        do {
 	        	System.out.println("Enter the name of features you wish to select, or type exit to exit , or type finish when you want the project to be generated");
 	        	s = scan.nextLine();
-	        	if (s.equals("finish"))
-	        	{
-	        		CreateProject.generate(fi.getSelectedFeature(configName));
-	        		break;
-	        	}
+	        	
 	        	if (s.equals("Fixe"))
 	        	{	String temp = s;
 	        		System.out.println("Enter the number of creature : ");
@@ -67,6 +66,17 @@ public class App
 		        	System.out.println("Deselected features :"+fi.getDeselectedFeature(configName));
 		        	System.out.println("Unselected features :"+fi.getUnselectedFeature(configName));
 		        	System.out.println("The configuration is complete : "+fi.getConfigurationVariable(configName).isComplete());
+	        	}
+	        	
+	        	if (s.equals("finish"))
+	        	{
+	        		//if(fi.getConfigurationVariable(configName).isComplete()){
+	        			CreateProject.generate(fi.getSelectedFeature(configName));
+	        		/*}
+	        		else{
+	        			System.out.println("The configuration is not valid !  Pease enter a new Configuration");
+	        		}*/
+	        		break;
 	        	}
 	        	
 	        } while (!s.equals("exit"));

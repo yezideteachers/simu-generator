@@ -28,7 +28,9 @@ import java.util.Random;
 
 
 
+
 import fr.unice.deptinfo.maven_compiler.FileTool;
+import fr.unice.deptinfo.maven_compiler.MavenCompiler;
 
 public class CreateProject {
 	
@@ -179,6 +181,7 @@ public class CreateProject {
 		
 		cr.editConst("Ressources/src/main/Constante.java");
 		
+		 MavenCompiler  maven = new MavenCompiler();
 		
 		try {
 			FileTool.copyFilesRecursively(new File("Ressources"), new File("Ressources/"), new File("generated"),fileFilter);
@@ -191,6 +194,9 @@ public class CreateProject {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		 File tp5=new File("generated");
+		 File target= new File("generated/target/");
+		 maven.compile(new File("generated"), new File("target"));
 	}
 	
 	public static FileFilter MyFilterMyplugins(final Collection<String> selected){
