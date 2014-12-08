@@ -9,10 +9,7 @@ import fr.unice.polytech.modalis.familiar.interpreter.VariableNotExistingExcepti
 import fr.unice.polytech.modalis.familiar.parser.VariableAmbigousConflictException;
 import fr.unice.polytech.modalis.familiar.variable.FeatureModelVariable;
 
-/**
- * Hello world!
- *
- */
+
 public class App 
 {
     public static void main( String[] args )
@@ -30,8 +27,8 @@ public class App
     			"Action: Sequentiel;"+
     			"VitesseSimu: (VLent|VRapide|VNormal);"+
     			"Direction: (DAleatoire|DFixe);"+
-    			"DAleatoire -> Hasard;"+
-    			"DFixe -> Troupeau;)";
+    			"DFixe -> Troupeau;" + 
+    			"DAleatoire -> Hasard;)";
     	String configName = "SimuTechno";
     	
     	FamiliarInterpreter fi = FamiliarInterpreter.getInstance();
@@ -49,6 +46,7 @@ public class App
 	        String s = "";
 	        String selectCmd = "select ";
 	        
+	  
 	        do {
 	        	System.out.println("Enter the name of features you wish to select, or type exit to exit , or type finish when you want the project to be generated");
 	        	s = scan.nextLine();
@@ -65,21 +63,34 @@ public class App
 		        	System.out.println("Selected features :"+fi.getSelectedFeature(configName));
 		        	System.out.println("Deselected features :"+fi.getDeselectedFeature(configName));
 		        	System.out.println("Unselected features :"+fi.getUnselectedFeature(configName));
-		        	System.out.println("The configuration is complete : "+fi.getConfigurationVariable(configName).isComplete());
+		        	
+		        	
 	        	}
 	        	
 	        	if (s.equals("finish"))
-	        	{
-	        		//if(fi.getConfigurationVariable(configName).isComplete()){
+	        	{	//Mise en place de la configuration complète .
+	        		//Tout ce qui n'a pas etait selectionné est considerer comme deselectionner .
+	        		for (String feature : fi.getUnselectedFeature(configName))
+	        		{
+	        			fi.eval("deselect "  + feature +" in "+configName);
+	        			
+	        		}
+	        		
+	        		
+	        		//On ne lance la generation que si la configuration est valide et complete .	
+	        		if((fi.getConfigurationVariable(configName).isComplete()) && (fi.getConfigurationVariable(configName).isValid())){
+	        			System.out.println("The configuration is complete : "+fi.getConfigurationVariable(configName).isComplete());
 	        			CreateProject.generate(fi.getSelectedFeature(configName));
-	        		/*}
+	        			break;
+	        		}
 	        		else{
-	        			System.out.println("The configuration is not valid !  Pease enter a new Configuration");
-	        		}*/
-	        		break;
+	        			
+	        			 System.out.println("The config isn't complete yet . Please complete the configuration before generating it .");
+	        		}
 	        	}
 	        	
-	        } while (!s.equals("exit"));
+	        }
+	        while (!s.equals("exit"));
 		} catch (FMEngineException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

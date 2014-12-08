@@ -1,4 +1,4 @@
-package fr.unice.deptinfo.simu_generator;
+package mavencompiler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -235,7 +235,6 @@ public class FileTool
     
     public static void copyFilesRecursively(File sourceFile, File sourcePath, File targetPath) throws IOException{
         //Defines no filter
-    	
         FileFilter noFilter = new FileFilter() {
             public boolean accept(File file) {
                 return true;
@@ -246,15 +245,13 @@ public class FileTool
     }
     
     public static void copyFilesRecursively(File sourceFile, File sourcePath, File targetPath, FileFilter fileFilter) throws IOException {
-    	
-    	try {
+        try {
             copy(sourceFile,  new File(targetPath.getCanonicalPath() + sourceFile.getCanonicalPath().replace(sourcePath.getCanonicalPath(),"")));
         } catch (IOException e) {
             throw new IOException("It is not possible to copy one or more files ("+ sourceFile.getName() +"). Error: " + e.getMessage() );
         }
         if (sourceFile.isDirectory()) {
             for (File child : sourceFile.listFiles(fileFilter)) {
-            	
                 copyFilesRecursively(child, sourcePath, targetPath, fileFilter);
             }
         }

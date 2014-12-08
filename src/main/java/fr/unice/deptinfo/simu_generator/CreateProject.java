@@ -22,25 +22,24 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import mavencompiler.FileTool;
+import mavencompiler.MavenCompiler;
 
 
 
 
-
-
-
-import fr.unice.deptinfo.maven_compiler.FileTool;
-import fr.unice.deptinfo.maven_compiler.MavenCompiler;
 
 public class CreateProject {
 	
 	public static int nbrCreature=10;
 	public static boolean visu= false;
 	public static int vitesseSimu = 10 ;
+	public static String color=null;
 	public static Map<String,Method> map = new HashMap<String, Method>(); 
-	public static Map mapNbCreat = new  HashMap<String, Integer>();
-	public static Map mapVitSimul = new  HashMap<String, Integer>();
-	public static Map mapStrategy = new  HashMap<String, String>();
+	public static Map<String, Integer> mapNbCreat = new  HashMap<String, Integer>();
+	public static Map<String, Integer> mapVitSimul = new  HashMap<String, Integer>();
+	public static Map<String, String> mapStrategy = new  HashMap<String, String>();
+	public static Map<String, String> mapColor = new  HashMap<String, String>();
 	/*create folder src , bin*/
 	public void createProject(String folder){
 		new File(folder).mkdir();
@@ -57,6 +56,10 @@ public class CreateProject {
 		mapStrategy.put("Circulaire", "StrategyCirculaire.class");
 		mapStrategy.put("Troupeau", "StrategyTroupeau.class");
 		mapStrategy.put("Ferme", "StrategyFerme.class");
+		
+		mapColor.put("Unique", "ColorUnique");
+		mapColor.put("Groupe", "ColorGroup");
+		mapColor.put("Cube", "ColorCube");
 	}
 	
 	public void generateMethode(){
@@ -111,6 +114,13 @@ public class CreateProject {
 	            	String [] s = line.split("=");          	
 	            	line = line.replace(s[1],vitesseSimu+" ;"); 
 	            }
+	            
+	            if (line.contains("return new")){
+	            	String [] s = line.split(" ");          	
+	            	line = line.replace(s[2],color+"(50)"); 
+	            }
+	           
+	            
 	            bw.write(line+"\n");
 	         }
 	         
@@ -163,11 +173,15 @@ public class CreateProject {
 			
 			if(mapNbCreat.get(c) != null)
 			{
-				nbrCreature = (Integer) mapNbCreat.get(c);
+				nbrCreature = mapNbCreat.get(c);
 			}
 			if(mapVitSimul.get(c) != null)
 			{
-				vitesseSimu = (Integer) mapVitSimul.get(c);
+				vitesseSimu = mapVitSimul.get(c);
+			}
+			
+			if(mapColor.get(c) != null){
+				color = mapColor.get(c);
 			}
 			
 			if (c.equals("Visu"))
@@ -228,7 +242,7 @@ public class CreateProject {
 				for (String c : selected) {
 				
 				if ((mapStrategy.get(c) != null)&&(file.getName().equals(mapStrategy.get(c))||
-						file.getName().equals((((String)mapStrategy.get(c)).split(".class"))[0]+"Test.class")))
+						file.getName().equals((mapStrategy.get(c).split(".class"))[0]+"Test.class")))
 				{
 					return true;
 				}}
